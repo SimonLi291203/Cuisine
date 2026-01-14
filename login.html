@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Connexion - Livre de Recettes</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>🔒 Connexion au Livre de Recettes</h1>
+
+<p>Entrez le mot de passe pour accéder aux recettes :</p>
+
+<input type="password" id="pwd" placeholder="Mot de passe">
+<button onclick="checkPassword()">Se connecter</button>
+
+<script>
+  function checkPassword() {
+    const password = document.getElementById("pwd").value;
+    // Change "recette123" par ton mot de passe
+    if (password === "recette123") {
+      window.location.href = "index.html"; // page d'accueil après connexion
+    } else {
+      alert("Mot de passe incorrect !");
+    }
+  }
+
+  // Permet de presser Enter pour valider
+  document.getElementById("pwd").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+      checkPassword();
+    }
+  });
+</script>
+
+</body>
+</html>
