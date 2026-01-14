@@ -8,39 +8,46 @@
 <body>
 
 <h1>🍽️ Mes Recettes</h1>
-<ul id="recettes-list"></ul>
-<button onclick="window.location.href='recette.html'">Ajouter une recette</button>
 
-<!-- Firebase -->
+<ul id="recettes-list"></ul>
+
+<button onclick="window.location.href='recette.html'">➕ Ajouter une recette</button>
+
+<!-- Firebase compat -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script>
-  // Configuration Firebase (remplace par tes infos)
-  const firebaseConfig = {
-    apiKey: "AIzaSyBWp8UeYOQT2LmmLrbuix2-AFJZT47dd2E",
-    authDomain: "recettes-personnelles.firebaseapp.com",
-    projectId: "recettes-personnelles",
-    storageBucket: "recettes-personnelles.firebasestorage.app",
-    messagingSenderId: "323047086323",
-    appId: "1:323047086323:web:b9afeb7a6a59a0cce03f86",
-    measurementId: "G-C16RTE39L8"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
 
-  // Charger toutes les recettes
-  const recettesList = document.getElementById('recettes-list');
-  function loadRecettes() {
-    recettesList.innerHTML = '';
-    db.collection("recettes").get().then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        const li = document.createElement('li');
-        li.innerHTML = `<a href="recette.html?id=${doc.id}">${data.titre}</a>`;
-        recettesList.appendChild(li);
-      });
+<script>
+  // Initialisation Firebase
+  if (!firebase.apps.length) {
+    firebase.initializeApp({
+      apiKey: "AIzaSyBWp8UeYOQT2LmmLrbuix2-AFJZT47dd2E",
+      authDomain: "recettes-personnelles.firebaseapp.com",
+      projectId: "recettes-personnelles",
+      storageBucket: "recettes-personnelles.firebasestorage.app",
+      messagingSenderId: "323047086323",
+      appId: "1:323047086323:web:b9afeb7a6a59a0cce03f86",
+      measurementId: "G-C16RTE39L8"
     });
   }
+  const db = firebase.firestore();
+
+  const recettesList = document.getElementById('recettes-list');
+
+  function loadRecettes() {
+    recettesList.innerHTML = '';
+    db.collection("recettes").orderBy("date", "desc").get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          const data = doc.data();
+          const li = document.createElement('li');
+          li.innerHTML = `<a href="recette.html?id=${doc.id}">${data.titre} (${data.date})</a>`;
+          recettesList.appendChild(li);
+        });
+      })
+      .catch(err => alert('Erreur : ' + err));
+  }
+
   loadRecettes();
 </script>
 
