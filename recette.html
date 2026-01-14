@@ -2,26 +2,46 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Ajouter/Modifier Recette</title>
+  <title>Recette</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>Recette</h1>
+<h1 id="titre-recette">Recette</h1>
 
-<label>Titre</label>
-<input type="text" id="titre">
+<div id="recette-details">
+  <p><strong>Ingrédients :</strong></p>
+  <ul id="ingredients-list"></ul>
 
-<label>Ingrédients (séparés par des virgules)</label>
-<textarea id="ingredients" rows="3"></textarea>
+  <p><strong>Préparation :</strong></p>
+  <ol id="preparation-list"></ol>
 
-<label>Préparation (séparée par ligne)</label>
-<textarea id="preparation" rows="5"></textarea>
+  <p><strong>Notes :</strong></p>
+  <p id="notes-text"></p>
 
-<label>Notes</label>
-<textarea id="notes" rows="3"></textarea>
+  <p><strong>Date :</strong> <span id="date-text"></span></p>
+</div>
 
-<button onclick="saveRecette()">Sauvegarder</button>
+<!-- Formulaire pour modifier -->
+<div id="recette-form" style="display:none;">
+  <label>Titre</label>
+  <input type="text" id="titre">
+
+  <label>Ingrédients (séparés par des virgules)</label>
+  <textarea id="ingredients" rows="3"></textarea>
+
+  <label>Préparation (séparée par ligne)</label>
+  <textarea id="preparation" rows="5"></textarea>
+
+  <label>Notes</label>
+  <textarea id="notes" rows="3"></textarea>
+
+  <button onclick="saveRecette()">Sauvegarder</button>
+  <button onclick="cancelEdit()">Annuler</button>
+</div>
+
+<button id="edit-btn" style="display:none;" onclick="showEditForm()">Modifier</button>
+<button id="delete-btn" style="display:none;" onclick="deleteRecette()">Supprimer</button>
 <p><a href="index.html">← Retour à la liste</a></p>
 
 <!-- Firebase compat -->
@@ -29,7 +49,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-  // Initialisation Firebase (remplace avec ta config)
+  // Initialisation Firebase
   if (!firebase.apps.length) {
     firebase.initializeApp({
       apiKey: "AIzaSyBWp8UeYOQT2LmmLrbuix2-AFJZT47dd2E",
@@ -43,51 +63,101 @@
   }
   const db = firebase.firestore();
 
-  // Récupérer l'ID depuis l'URL si on modifie une recette
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get('id');
 
-  // Si modification, remplir le formulaire
-  if (id) {
-    db.collection("recettes").doc(id).get().then((doc) => {
-      if (doc.exists) {
+  const titreH1 = document.getElementById('titre-recette');
+  const ingredientsList = document.getElementById('ingredients-list');
+  const preparationList = document.getElementById('preparation-list');
+  const notesText = document.getElementById('notes-text');
+  const dateText = document.getElementById('date-text');
+
+  const editBtn = document.getElementById('edit-btn');
+  const deleteBtn = document.getElementById('delete-btn');
+  const formDiv = document.getElementById('recette-form');
+
+  // Form inputs
+  const inputTitre = document.getElementById('titre');
+  const inputIngredients = document.getElementById('ingredients');
+  const inputPreparation = document.getElementById('preparation');
+  const inputNotes = document.getElementById('notes');
+
+  // Charger la recette
+  function loadRecette() {
+    if(!id) return; // Nouvelle recette
+    db.collection("recettes").doc(id).get().then(doc => {
+      if(doc.exists){
         const data = doc.data();
-        document.getElementById('titre').value = data.titre;
-        document.getElementById('ingredients').value = data.ingredients.join(', ');
-        document.getElementById('preparation').value = data.preparation.join('\n');
-        document.getElementById('notes').value = data.notes;
+        titreH1.textContent = data.titre;
+        ingredientsList.innerHTML = '';
+        data.ingredients.forEach(i => {
+          const li = document.createElement('li'); li.textContent = i; ingredientsList.appendChild(li);
+        });
+        preparationList.innerHTML = '';
+        data.preparation.forEach(s => {
+          const li = document.createElement('li'); li.textContent = s; preparationList.appendChild(li);
+        });
+        notesText.textContent = data.notes || '';
+        dateText.textContent = data.date || '';
+        // Montrer boutons modifier/supprimer
+        editBtn.style.display = 'inline-block';
+        deleteBtn.style.display = 'inline-block';
+      } else {
+        alert('Recette introuvable');
       }
-    }).catch(err => {
-      alert("Erreur lors du chargement de la recette : " + err);
-    });
+    }).catch(err => alert('Erreur : '+err));
   }
 
-  // Fonction pour sauvegarder la recette
-  function saveRecette() {
-    const titre = document.getElementById('titre').value;
-    const ingredients = document.getElementById('ingredients').value.split(',').map(s => s.trim());
-    const preparation = document.getElementById('preparation').value.split('\n').map(s => s.trim());
-    const notes = document.getElementById('notes').value;
+  loadRecette();
 
+  // Afficher le formulaire pour modifier
+  function showEditForm() {
+    formDiv.style.display = 'block';
+    // Pré-remplir le formulaire
+    inputTitre.value = titreH1.textContent;
+    inputIngredients.value = Array.from(ingredientsList.children).map(li => li.textContent).join(', ');
+    inputPreparation.value = Array.from(preparationList.children).map(li => li.textContent).join('\n');
+    inputNotes.value = notesText.textContent;
+    // Cacher les détails
+    document.getElementById('recette-details').style.display = 'none';
+    editBtn.style.display = 'none';
+    deleteBtn.style.display = 'none';
+  }
+
+  // Annuler édition
+  function cancelEdit() {
+    formDiv.style.display = 'none';
+    document.getElementById('recette-details').style.display = 'block';
+    editBtn.style.display = 'inline-block';
+    deleteBtn.style.display = 'inline-block';
+  }
+
+  // Sauvegarder recette (ajout ou modification)
+  function saveRecette() {
     const data = {
-      titre,
-      ingredients,
-      preparation,
-      notes,
+      titre: inputTitre.value,
+      ingredients: inputIngredients.value.split(',').map(s => s.trim()),
+      preparation: inputPreparation.value.split('\n').map(s => s.trim()),
+      notes: inputNotes.value,
       date: new Date().toISOString().split('T')[0]
     };
-
-    if (id) {
-      // Modification
+    if(id){
       db.collection("recettes").doc(id).set(data)
-        .then(() => alert('Recette sauvegardée !'))
-        .catch(err => alert('Erreur : ' + err));
+        .then(()=>{ alert('Recette sauvegardée !'); cancelEdit(); loadRecette(); })
+        .catch(err=>alert('Erreur : '+err));
     } else {
-      // Nouvelle recette
       db.collection("recettes").add(data)
-        .then(() => alert('Recette sauvegardée !'))
-        .catch(err => alert('Erreur : ' + err));
+        .then(()=>{ alert('Recette sauvegardée !'); window.location.href='index.html'; })
+        .catch(err=>alert('Erreur : '+err));
     }
+  }
+
+  // Supprimer recette
+  function deleteRecette() {
+    if(!confirm('Supprimer cette recette ?')) return;
+    db.collection("recettes").doc(id).delete()
+      .then(()=>{ alert('Recette supprimée !'); window.location.href='index.html'; })
+      .catch(err=>alert('Erreur : '+err));
   }
 </script>
 
