@@ -27,39 +27,51 @@
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
-
 <script>
-const urlParams = new URLSearchParams(window.location.search);
-const id = urlParams.get('id');
-
-if(id){
-  db.collection("recettes").doc(id).get().then((doc) => {
-    if(doc.exists){
-      const data = doc.data();
-      document.getElementById('titre').value = data.titre;
-      document.getElementById('ingredients').value = data.ingredients.join(', ');
-      document.getElementById('preparation').value = data.preparation.join('\n');
-      document.getElementById('notes').value = data.notes;
-    }
-  });
-}
-
-function saveRecette(){
-  const data = {
-    titre: document.getElementById('titre').value,
-    ingredients: document.getElementById('ingredients').value.split(',').map(s => s.trim()),
-    preparation: document.getElementById('preparation').value.split('\n').map(s => s.trim()),
-    notes: document.getElementById('notes').value,
-    date: new Date().toISOString().split('T')[0]
+  // Configuration Firebase (idem index.html)
+  const firebaseConfig = {
+    apiKey: "UeYQT2LmmLrbuix2-AFJZT47dd2E",
+    authDomain: "recettes-personnelles.firebaseapp.com",
+    projectId: "recettes-personnelles",
+    storageBucket: "recettes-personnelles.appspot.com",
+    messagingSenderId: "3230470",
+    appId: "1:323047086323:web:eb7a6a59a0cce03f86",
+    measurementId: "G-C16RTE39L8"
   };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-  if(id) db.collection("recettes").doc(id).set(data);
-  else db.collection("recettes").add(data);
+  // Récupérer l'ID depuis l'URL pour modification
+  const urlParams = new URLSearchParams(window.location.search);
+  const id = urlParams.get('id');
 
-  alert('Recette sauvegardée !');
-  window.location.href = "index.html";
-}
+  if(id){
+    db.collection("recettes").doc(id).get().then((doc) => {
+      if(doc.exists){
+        const data = doc.data();
+        document.getElementById('titre').value = data.titre;
+        document.getElementById('ingredients').value = data.ingredients.join(', ');
+        document.getElementById('preparation').value = data.preparation.join('\n');
+        document.getElementById('notes').value = data.notes;
+      }
+    });
+  }
+
+  function saveRecette(){
+    const data = {
+      titre: document.getElementById('titre').value,
+      ingredients: document.getElementById('ingredients').value.split(',').map(s => s.trim()),
+      preparation: document.getElementById('preparation').value.split('\n').map(s => s.trim()),
+      notes: document.getElementById('notes').value,
+      date: new Date().toISOString().split('T')[0]
+    };
+
+    if(id) db.collection("recettes").doc(id).set(data);
+    else db.collection("recettes").add(data);
+
+    alert('Recette sauvegardée !');
+    window.location.href = "index.html";
+  }
 </script>
 
 </body>
