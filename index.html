@@ -1,20 +1,38 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Mon livre de recettes</title>
+  <title>Mes Recettes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <h1>🍽️ Mon livre de recettes</h1>
-  <p>Bienvenue sur mon site de recettes personnelles.</p>
+<h1>🍽️ Mes Recettes</h1>
+<ul id="recettes-list"></ul>
+<button onclick="window.location.href='recette.html'">Ajouter une recette</button>
 
-  <h2>Recettes</h2>
-  <ul>
-    <li><a href="pates.html">Pâtes à l’ail</a></li>
-  </ul>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+
+<script>
+const recettesList = document.getElementById('recettes-list');
+
+function loadRecettes() {
+  recettesList.innerHTML = '';
+  db.collection("recettes").get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const li = document.createElement('li');
+      li.innerHTML = `<a href="recette.html?id=${doc.id}">${data.titre}</a>`;
+      recettesList.appendChild(li);
+    });
+  });
+}
+
+loadRecettes();
+</script>
 
 </body>
 </html>
