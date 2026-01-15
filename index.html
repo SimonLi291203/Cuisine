@@ -2,55 +2,74 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Mes recettes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mes recettes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <h1>🍽️ Mes recettes</h1>
 
+<!-- Barre de recherche -->
+<input type="text" id="search" placeholder="Rechercher une recette..." />
+
 <a href="recette.html" class="add-button">➕ Ajouter une recette</a>
 
 <div id="recettes-list" class="recettes-container"></div>
 
-<!-- ================= FIREBASE ================= -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-/* ========= FIREBASE INIT ========= */
 firebase.initializeApp({
   apiKey: "AIzaSyBWp8UeYOQT2LmmLrbuix2-AFJZT47dd2E",
   authDomain: "recettes-personnelles.firebaseapp.com",
   projectId: "recettes-personnelles",
   storageBucket: "recettes-personnelles.firebasestorage.app",
   messagingSenderId: "323047086323",
-  appId: "1:323047086323:web:b9afeb7a6a59a0cce03f86",
+  appId: "1:323047086323:web:b9afeb7a6a59cce03f86",
   measurementId: "G-C16RTE39L8"
 });
 
 const db = firebase.firestore();
 const recettesList = document.getElementById("recettes-list");
+const searchInput = document.getElementById("search");
 
-/* ========= LOAD RECETTES ========= */
-db.collection("recettes")
-  .orderBy("date", "desc")
-  .onSnapshot(snapshot => {
-    recettesList.innerHTML = "";
+let recettesData = []; // tableau pour stocker toutes les recettes
 
-    snapshot.forEach(doc => {
-      const data = doc.data();
+// Charger toutes les recettes
+db.collection("recettes").get().then(snapshot => {
+  recettesData = snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
 
-      recettesList.innerHTML += `
-        <a href="recette.html?id=${doc.id}" class="recette-card">
-          <h2>${data.titre}</h2>
-          <p class="date">Dernière modification : ${data.date}</p>
-          <span class="arrow">›</span>
-        </a>
-      `;
-    });
+  // Trier alphabétiquement par titre
+  recettesData.sort((a, b) => a.titre.localeCompare(b.titre, 'fr', {sensitivity: 'base'}));
+
+  displayRecettes(recettesData);
+});
+
+// Fonction pour afficher les cartes
+function displayRecettes(recettes) {
+  recettesList.innerHTML = "";
+  recettes.forEach(data => {
+    recettesList.innerHTML += `
+      <a href="recette.html?id=${data.id}" class="recette-card">
+        <h2>${data.titre}</h2>
+        <p class="date">Dernière modification : ${data.date}</p>
+        <span class="arrow">›</span>
+      </a>
+    `;
   });
+}
+
+// Recherche en temps réel
+searchInput.addEventListener("input", () => {
+  const query = searchInput.value.toLowerCase();
+  const filtered = recettesData.filter(r => r.titre.toLowerCase().includes(query));
+  displayRecettes(filtered);
+});
 </script>
 
 </body>
