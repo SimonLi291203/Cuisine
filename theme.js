@@ -1,21 +1,28 @@
-// ========== MODE SOMBRE COMMUN ==========
-const toggleDarkBtn = document.getElementById("toggle-dark");
+// ======== MODE SOMBRE COMMUN ========
 
-// Si le bouton existe (index.html), ajoute l'écoute
-if(toggleDarkBtn){
-  toggleDarkBtn.addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-
-    // Sauvegarder le choix
-    if(document.body.classList.contains("dark-mode")){
-      localStorage.setItem("darkMode", "enabled");
-    } else {
-      localStorage.setItem("darkMode", "disabled");
-    }
-  });
+// Fonction pour appliquer le mode sombre
+function applyDarkMode() {
+  if (localStorage.getItem("darkMode") === "enabled") {
+    document.body.classList.add("dark-mode");
+  } else {
+    document.body.classList.remove("dark-mode");
+  }
 }
 
-// Appliquer le mode sombre sur TOUTES les pages
-if(localStorage.getItem("darkMode") === "enabled"){
-  document.body.classList.add("dark-mode");
-}
+// Appliquer le mode sombre dès que le DOM est chargé
+document.addEventListener("DOMContentLoaded", () => {
+  applyDarkMode();
+
+  // Bouton uniquement si présent (index.html)
+  const toggleBtn = document.getElementById("toggle-dark");
+  if (toggleBtn) {
+    toggleBtn.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+      if (document.body.classList.contains("dark-mode")) {
+        localStorage.setItem("darkMode", "enabled");
+      } else {
+        localStorage.setItem("darkMode", "disabled");
+      }
+    });
+  }
+});
