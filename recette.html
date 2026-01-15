@@ -13,6 +13,8 @@
 
 <!-- ===== AFFICHAGE RECETTE ===== -->
 <div id="recette-details" style="display:none;">
+  <p><strong>Pour :</strong> <span id="personnes-text"></span> personne(s)</p>
+
   <p><strong>Ingrédients :</strong></p>
   <ul id="ingredients-list"></ul>
 
@@ -30,6 +32,9 @@
 
 <!-- ===== FORMULAIRE ===== -->
 <div id="recette-form" style="display:none;">
+  <label>Nombre de personnes</label>
+  <input type="number" id="personnes" min="1" value="1">
+
   <label>Titre</label>
   <input type="text" id="titre">
 
@@ -75,6 +80,7 @@ const details = document.getElementById("recette-details");
 const form = document.getElementById("recette-form");
 const title = document.getElementById("page-title");
 
+const inputPersonnes = document.getElementById("personnes");
 const inputTitre = document.getElementById("titre");
 const inputIngredients = document.getElementById("ingredients");
 const inputPreparation = document.getElementById("preparation");
@@ -106,6 +112,9 @@ function loadRecette() {
     const data = doc.data();
     title.textContent = data.titre;
 
+    // affichage nombre de personnes
+    document.getElementById("personnes-text").textContent = data.personnes || 1;
+
     document.getElementById("ingredients-list").innerHTML =
       data.ingredients.map(i => `<li>${i}</li>`).join("");
 
@@ -124,6 +133,7 @@ function showEditForm() {
   details.style.display = "none";
 
   inputTitre.value = title.textContent;
+  inputPersonnes.value = document.getElementById("personnes-text").textContent;
   inputIngredients.value = [...document.querySelectorAll("#ingredients-list li")]
     .map(li => li.textContent).join(", ");
   inputPreparation.value = [...document.querySelectorAll("#preparation-list li")]
@@ -145,15 +155,14 @@ function saveRecette() {
   const day = String(today.getDate()).padStart(2, '0');
   const month = String(today.getMonth() + 1).padStart(2, '0'); // mois de 0 à 11
   const year = today.getFullYear();
-
   const dateEurope = `${day}-${month}-${year}`; // "05-01-2026"
 
   const data = {
+    personnes: parseInt(inputPersonnes.value) || 1,
     titre: inputTitre.value,
     ingredients: inputIngredients.value.split(",").map(s => s.trim()),
     preparation: inputPreparation.value.split("\n").map(s => s.trim()),
     notes: inputNotes.value,
-    
     date: dateEurope
   };
 
