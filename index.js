@@ -1,4 +1,5 @@
 /* ======================= FIREBASE INIT ======================= */
+
 firebase.initializeApp({
   apiKey: "AIzaSyBWp8UeYOQT2LmmLrbuix2-AFJZT47dd2E",
   authDomain: "recettes-personnelles.firebaseapp.com",
@@ -8,13 +9,13 @@ firebase.initializeApp({
   appId: "1:323047086323:web:b9afeb7a6a59cce03f86",
   measurementId: "G-C16RTE39L8"
 });
-firebase.auth().signInAnonymously()
-  .catch(error => {
-    console.error("Erreur auth anonyme", error);
-  });
+
+/* ======================= INIT SERVICES ======================= */
+const auth = firebase.auth();        // Authentification
+const db = firebase.firestore();     // Firestore
 
 
-const db = firebase.firestore();
+
 
 /* ======================= DOM ======================= */
 const recettesList = document.getElementById("recettes-list");
