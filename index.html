@@ -7,80 +7,22 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<p><a href="Accueil.html">← Retour à l'accueil</a></p>
 
+<p><a href="accueil.html">← Retour à l'accueil</a></p>
 <h1>🍽️ Mes recettes</h1>
 
-<!-- Barre de recherche -->
 <input type="text" id="search" placeholder="Rechercher une recette..." />
 
 <a href="recette.html" class="add-button">➕ Ajouter une recette</a>
 
 <div id="recettes-list" class="recettes-container"></div>
 
-<!-- FIREBASE -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-<script>
-firebase.initializeApp({
-  apiKey: "AIzaSyBWp8UeYOQT2LmmLrbuix2-AFJZT47dd2E",
-  authDomain: "recettes-personnelles.firebaseapp.com",
-  projectId: "recettes-personnelles",
-  storageBucket: "recettes-personnelles.firebasestorage.app",
-  messagingSenderId: "323047086323",
-  appId: "1:323047086323:web:b9afeb7a6a59cce03f86",
-  measurementId: "G-C16RTE39L8"
-});
-
-const db = firebase.firestore();
-const recettesList = document.getElementById("recettes-list");
-const searchInput = document.getElementById("search");
-
-let recettesData = []; // tableau pour stocker toutes les recettes
-
-/* ======================= Chargement des recettes ======================= */
-db.collection("recettes").get().then(snapshot => {
-  recettesData = snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  }));
-
-  // Tri alphabétique par titre
-  recettesData.sort((a, b) => a.titre.localeCompare(b.titre, 'fr', {sensitivity: 'base'}));
-
-  displayRecettes(recettesData);
-});
-
-/* ======================= Affichage des cartes ======================= */
-function displayRecettes(recettes) {
-  recettesList.innerHTML = "";
-  recettes.forEach(data => {
-    recettesList.innerHTML += `
-      <a href="recette.html?id=${data.id}" class="recette-card">
-        <h2>${data.titre}</h2>
-        <p class="date">Dernière modification : ${data.date}</p>
-        <span class="arrow">›</span>
-      </a>
-    `;
-  });
-}
-
-/* ======================= Fonctions recherche accent-insensible ======================= */
-function removeAccents(str) {
-  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-}
-
-searchInput.addEventListener("input", () => {
-  const query = removeAccents(searchInput.value.toLowerCase());
-
-  const filtered = recettesData.filter(r => 
-    removeAccents(r.titre.toLowerCase()).includes(query)
-  );
-
-  displayRecettes(filtered);
-});
-</script>
+<!-- Ton JS -->
+<script src="index.js"></script>
 
 </body>
 </html>
