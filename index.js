@@ -62,7 +62,7 @@ searchInput.addEventListener("input", () => {
 
   displayRecettes(filtered);
 });
-<script src="theme.js"></script>
+
 
 
 
