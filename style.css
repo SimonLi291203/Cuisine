@@ -166,3 +166,58 @@ p a {
   font-weight: bold;
   color: #ff7043;
 }
+/* ================= TEXTE RECETTE / FORMULAIRE MOBILE ================= */
+
+body {
+  font-size: 16px; /* taille base confortable pour mobile */
+}
+
+h1 {
+  font-size: 1.6rem; /* titre page */
+}
+
+label {
+  font-size: 1rem; /* labels lisibles */
+}
+
+input, textarea {
+  font-size: 1rem;
+  padding: 12px;
+}
+
+#recette-details p,
+#recette-details li {
+  font-size: 1rem; /* texte ingrédients, préparation, notes */
+}
+
+#preparation-list li {
+  line-height: 1.5;
+}
+
+#ingredients-list li {
+  line-height: 1.5;
+}
+
+/* input nombre de personnes */
+#personnes,
+#personnes-affichage {
+  font-size: 1rem;
+  padding: 8px;
+  max-width: 120px;
+}
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  button {
+    font-size: 1rem;
+    padding: 10px;
+  }
+
+  #recette-details,
+  #recette-form {
+    margin: 10px;
+    padding: 14px;
+  }
+}
