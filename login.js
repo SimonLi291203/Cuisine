@@ -1,5 +1,5 @@
 firebase.initializeApp({
-  apiKey: "TON_API_KEY",
+  apiKey: "AIzaSyBWp8UeYOQT2LmmLrbuix2-AFJZT47dd2E",
   authDomain: "recettes-personnelles.firebaseapp.com",
   projectId: "recettes-personnelles",
   storageBucket: "recettes-personnelles.firebasestorage.app",
