@@ -10,35 +10,7 @@ firebase.initializeApp({
   measurementId: "G-C16RTE39L8"
 });
 
-/* ======================= INIT SERVICES ======================= */
-const auth = firebase.auth();        // Authentification
 const db = firebase.firestore();     // Firestore
-
-/* ======================= CONNEXION ANONYME ======================= */
-auth.signInAnonymously()
-  .then(() => {
-    console.log("Utilisateur anonyme connecté !");
-    console.log("TON UID :", auth.currentUser.uid);
-  })
-  .catch(error => {
-    console.error("Erreur connexion anonyme :", error);
-  });
-if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
-  let email = window.localStorage.getItem("emailForSignIn");
-
-  if (!email) {
-    email = prompt("Veuillez confirmer votre email");
-  }
-
-  firebase.auth().signInWithEmailLink(email, window.location.href)
-    .then(result => {
-      window.localStorage.removeItem("emailForSignIn");
-      console.log("Connecté :", result.user.email);
-    })
-    .catch(err => console.error(err));
-}
-
-
 
 /* ======================= DOM ======================= */
 const recettesList = document.getElementById("recettes-list");
