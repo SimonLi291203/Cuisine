@@ -29,7 +29,7 @@ loginBtn.onclick = () => {
   }
 
   auth.sendSignInLinkToEmail(email, {
-    url: window.location.origin + "/index.html", // page de redirection après clic
+    url: window.location.origin + "/Cuisine/Accueil.html", // page de redirection après clic
     handleCodeInApp: true
   })
   .then(() => {
@@ -58,7 +58,7 @@ if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
       window.localStorage.removeItem("emailForSignIn");
 
       // Redirection vers index.html après connexion
-      window.location.href = "index.html";
+      window.location.href = "Cuisine/Accueil.html";
     })
     .catch(err => {
       console.error("Erreur connexion via lien :", err);
