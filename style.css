@@ -246,3 +246,26 @@ input, textarea {
   font-size: 1.2rem;
   padding: 14px 24px;
 }
+/* ========== MODE SOMBRE ========== */
+body.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.dark-mode input,
+.dark-mode textarea,
+.dark-mode select,
+.dark-mode button {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border: 1px solid #444;
+}
+
+.dark-mode a {
+  color: #bb86fc;
+}
+
+.dark-mode .recette-card {
+  background-color: #1e1e1e;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
