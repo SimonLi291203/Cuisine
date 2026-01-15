@@ -4,7 +4,8 @@ firebase.initializeApp({
   projectId: "recettes-personnelles",
   storageBucket: "recettes-personnelles.firebasestorage.app",
   messagingSenderId: "323047086323",
-  appId: "TON_APP_ID"
+  appId: "1:323047086323:web:b9afeb7a6a59cce03f86",
+  measurementId: "G-C16RTE39L8"
 });
 
 const auth = firebase.auth();
