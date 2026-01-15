@@ -17,6 +17,7 @@
 
 <div id="recettes-list" class="recettes-container"></div>
 
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
@@ -37,20 +38,20 @@ const searchInput = document.getElementById("search");
 
 let recettesData = []; // tableau pour stocker toutes les recettes
 
-// Charger toutes les recettes
+/* ======================= Chargement des recettes ======================= */
 db.collection("recettes").get().then(snapshot => {
   recettesData = snapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
   }));
 
-  // Trier alphabétiquement par titre
+  // Tri alphabétique par titre
   recettesData.sort((a, b) => a.titre.localeCompare(b.titre, 'fr', {sensitivity: 'base'}));
 
   displayRecettes(recettesData);
 });
 
-// Fonction pour afficher les cartes
+/* ======================= Affichage des cartes ======================= */
 function displayRecettes(recettes) {
   recettesList.innerHTML = "";
   recettes.forEach(data => {
@@ -64,10 +65,18 @@ function displayRecettes(recettes) {
   });
 }
 
-// Recherche en temps réel
+/* ======================= Fonctions recherche accent-insensible ======================= */
+function removeAccents(str) {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
 searchInput.addEventListener("input", () => {
-  const query = searchInput.value.toLowerCase();
-  const filtered = recettesData.filter(r => r.titre.toLowerCase().includes(query));
+  const query = removeAccents(searchInput.value.toLowerCase());
+
+  const filtered = recettesData.filter(r => 
+    removeAccents(r.titre.toLowerCase()).includes(query)
+  );
+
   displayRecettes(filtered);
 });
 </script>
