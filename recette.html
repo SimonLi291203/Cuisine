@@ -66,6 +66,12 @@
 
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get('id');
+  // Mode création : pas d'ID → afficher directement le formulaire
+  if (!id) {
+    document.getElementById('recette-details').style.display = 'none';
+    document.getElementById('recette-form').style.display = 'block';
+  }
+
 
   // DOM Elements
   const detailsDiv = document.getElementById('recette-details');
