@@ -141,12 +141,19 @@ function cancelEdit() {
 }
 
 function saveRecette() {
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, '0');
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // mois de 0 à 11
+  const year = today.getFullYear();
+
+  const dateEurope = `${day}-${month}-${year}`; // "05-01-2026"
+
   const data = {
     titre: inputTitre.value,
     ingredients: inputIngredients.value.split(",").map(s => s.trim()),
     preparation: inputPreparation.value.split("\n").map(s => s.trim()),
     notes: inputNotes.value,
-    date: new Date().toISOString().split("T")[0]
+    date: dateEurope
   };
 
   if (id) {
