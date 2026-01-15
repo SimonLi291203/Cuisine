@@ -9,12 +9,8 @@
 
 <h1 id="page-title">Recette</h1>
 
-<!-- ================= AFFICHAGE ================= -->
+<!-- ===== AFFICHAGE RECETTE ===== -->
 <div id="recette-details" style="display:none;">
-
-  <label><strong>Nombre de personnes :</strong></label>
-  <input type="number" id="personnes-affichage" min="1">
-
   <p><strong>Ingrédients :</strong></p>
   <ul id="ingredients-list"></ul>
 
@@ -30,19 +26,15 @@
   <button onclick="deleteRecette()">🗑️ Supprimer</button>
 </div>
 
-<!-- ================= FORMULAIRE ================= -->
+<!-- ===== FORMULAIRE ===== -->
 <div id="recette-form" style="display:none;">
-
   <label>Titre</label>
   <input type="text" id="titre">
 
-  <label>Recette pour combien de personnes ?</label>
-  <input type="number" id="personnes" min="1" value="1">
+  <label>Ingrédients (séparés par des virgules)</label>
+  <textarea id="ingredients" rows="3"></textarea>
 
-  <label>Ingrédients (1 par ligne : `200 g Farine`)</label>
-  <textarea id="ingredients" rows="5"></textarea>
-
-  <label>Préparation (1 étape par ligne)</label>
+  <label>Préparation (une étape par ligne)</label>
   <textarea id="preparation" rows="5"></textarea>
 
   <label>Notes</label>
@@ -54,12 +46,12 @@
 
 <p><a href="index.html">← Retour à la liste</a></p>
 
-<!-- ================= FIREBASE ================= -->
+<!-- ===== FIREBASE ===== -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-/* ========= FIREBASE INIT ========= */
+/* ================= FIREBASE INIT ================= */
 if (!firebase.apps.length) {
   firebase.initializeApp({
     apiKey: "AIzaSyBWp8UeYOQT2LmmLrbuix2-AFJZT47dd2E",
@@ -73,7 +65,7 @@ if (!firebase.apps.length) {
 }
 const db = firebase.firestore();
 
-/* ========= VARIABLES ========= */
+/* ================= VARIABLES ================= */
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
@@ -82,37 +74,24 @@ const form = document.getElementById("recette-form");
 const title = document.getElementById("page-title");
 
 const inputTitre = document.getElementById("titre");
-const inputPersonnes = document.getElementById("personnes");
 const inputIngredients = document.getElementById("ingredients");
 const inputPreparation = document.getElementById("preparation");
 const inputNotes = document.getElementById("notes");
 
-let recetteData = null;
+/* ================= MODE ================= */
 
-/* ========= MODES ========= */
+// 🔹 MODE CRÉATION
 if (!id) {
   title.textContent = "Nouvelle recette";
   form.style.display = "block";
-} else {
+}
+
+// 🔹 MODE LECTURE
+if (id) {
   loadRecette();
 }
 
-/* ========= FONCTIONS ========= */
-
-function parseIngredients(text) {
-  return text.split("\n").map(line => {
-    const parts = line.trim().split(" ");
-    return {
-      quantite: parseFloat(parts[0]),
-      unite: parts[1],
-      nom: parts.slice(2).join(" ")
-    };
-  });
-}
-
-function formatIngredients(ingredients) {
-  return ingredients.map(i => `${i.quantite} ${i.unite} ${i.nom}`).join("\n");
-}
+/* ================= FONCTIONS ================= */
 
 function loadRecette() {
   db.collection("recettes").doc(id).get().then(doc => {
@@ -122,49 +101,32 @@ function loadRecette() {
       return;
     }
 
-    recetteData = doc.data();
-    title.textContent = recetteData.titre;
+    const data = doc.data();
+    title.textContent = data.titre;
 
-    document.getElementById("notes-text").textContent = recetteData.notes || "";
-    document.getElementById("date-text").textContent = recetteData.date || "";
+    document.getElementById("ingredients-list").innerHTML =
+      data.ingredients.map(i => `<li>${i}</li>`).join("");
 
     document.getElementById("preparation-list").innerHTML =
-      recetteData.preparation.map(p => `<li>${p}</li>`).join("");
+      data.preparation.map(p => `<li>${p}</li>`).join("");
 
-    displayIngredients(recetteData);
+    document.getElementById("notes-text").textContent = data.notes || "";
+    document.getElementById("date-text").textContent = data.date || "";
 
     details.style.display = "block";
   });
-}
-
-function displayIngredients(data) {
-  const input = document.getElementById("personnes-affichage");
-  const base = data.personnes;
-
-  input.value = base;
-
-  function update() {
-    const factor = input.value / base;
-    document.getElementById("ingredients-list").innerHTML =
-      data.ingredients.map(i => {
-        const q = (i.quantite * factor).toFixed(2).replace(".00","");
-        return `<li>${q} ${i.unite} ${i.nom}</li>`;
-      }).join("");
-  }
-
-  input.addEventListener("input", update);
-  update();
 }
 
 function showEditForm() {
   form.style.display = "block";
   details.style.display = "none";
 
-  inputTitre.value = recetteData.titre;
-  inputPersonnes.value = recetteData.personnes;
-  inputIngredients.value = formatIngredients(recetteData.ingredients);
-  inputPreparation.value = recetteData.preparation.join("\n");
-  inputNotes.value = recetteData.notes;
+  inputTitre.value = title.textContent;
+  inputIngredients.value = [...document.querySelectorAll("#ingredients-list li")]
+    .map(li => li.textContent).join(", ");
+  inputPreparation.value = [...document.querySelectorAll("#preparation-list li")]
+    .map(li => li.textContent).join("\n");
+  inputNotes.value = document.getElementById("notes-text").textContent;
 }
 
 function cancelEdit() {
@@ -179,26 +141,34 @@ function cancelEdit() {
 function saveRecette() {
   const data = {
     titre: inputTitre.value,
-    personnes: parseInt(inputPersonnes.value),
-    ingredients: parseIngredients(inputIngredients.value),
-    preparation: inputPreparation.value.split("\n"),
+    ingredients: inputIngredients.value.split(",").map(s => s.trim()),
+    preparation: inputPreparation.value.split("\n").map(s => s.trim()),
     notes: inputNotes.value,
     date: new Date().toISOString().split("T")[0]
   };
 
   if (id) {
     db.collection("recettes").doc(id).set(data)
-      .then(() => { alert("Recette modifiée !"); location.reload(); });
+      .then(() => {
+        alert("Recette modifiée !");
+        location.reload();
+      });
   } else {
     db.collection("recettes").add(data)
-      .then(() => { alert("Recette ajoutée !"); window.location.href = "index.html"; });
+      .then(() => {
+        alert("Recette ajoutée !");
+        window.location.href = "index.html";
+      });
   }
 }
 
 function deleteRecette() {
   if (!confirm("Supprimer cette recette ?")) return;
   db.collection("recettes").doc(id).delete()
-    .then(() => { alert("Recette supprimée"); window.location.href = "index.html"; });
+    .then(() => {
+      alert("Recette supprimée");
+      window.location.href = "index.html";
+    });
 }
 </script>
 
