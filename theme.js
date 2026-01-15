@@ -1,23 +1,17 @@
-// ======== MODE SOMBRE COMMUN ========
+// ===== MODE SOMBRE GLOBAL =====
+document.addEventListener("DOMContentLoaded", () => {
 
-// Fonction pour appliquer le mode sombre
-function applyDarkMode() {
+  // 1️⃣ Appliquer le mode sombre si déjà activé
   if (localStorage.getItem("darkMode") === "enabled") {
     document.body.classList.add("dark-mode");
-  } else {
-    document.body.classList.remove("dark-mode");
   }
-}
 
-// Appliquer le mode sombre dès que le DOM est chargé
-document.addEventListener("DOMContentLoaded", () => {
-  applyDarkMode();
-
-  // Bouton uniquement si présent (index.html)
+  // 2️⃣ Bouton sur index seulement
   const toggleBtn = document.getElementById("toggle-dark");
   if (toggleBtn) {
     toggleBtn.addEventListener("click", () => {
       document.body.classList.toggle("dark-mode");
+
       if (document.body.classList.contains("dark-mode")) {
         localStorage.setItem("darkMode", "enabled");
       } else {
