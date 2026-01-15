@@ -129,4 +129,4 @@ function deleteRecette() {
       window.location.href = "index.html";
     });
 }
-<script src="theme.js"></script>
+
