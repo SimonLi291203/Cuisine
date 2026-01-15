@@ -11,6 +11,15 @@ firebase.initializeApp({
 });
 const auth = firebase.auth(); 
 const db = firebase.firestore();
+/* ======================= CONNEXION ANONYME ======================= */
+auth.signInAnonymously()
+  .then(() => {
+    console.log("Utilisateur anonyme connecté !");
+    console.log("TON UID :", auth.currentUser.uid);
+  })
+  .catch(error => {
+    console.error("Erreur connexion anonyme :", error);
+  });
 
 /* ================= VARIABLES ================= */
 const params = new URLSearchParams(window.location.search);
