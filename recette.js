@@ -9,17 +9,8 @@ firebase.initializeApp({
   appId: "1:323047086323:web:b9afeb7a6a59a0cce03f86",
   measurementId: "G-C16RTE39L8"
 });
-const auth = firebase.auth(); 
 const db = firebase.firestore();
-/* ======================= CONNEXION ANONYME ======================= */
-auth.signInAnonymously()
-  .then(() => {
-    console.log("Utilisateur anonyme connecté !");
-    console.log("TON UID :", auth.currentUser.uid);
-  })
-  .catch(error => {
-    console.error("Erreur connexion anonyme :", error);
-  });
+
 
 /* ================= VARIABLES ================= */
 const params = new URLSearchParams(window.location.search);
