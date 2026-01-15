@@ -9,6 +9,11 @@ firebase.initializeApp({
   appId: "1:323047086323:web:b9afeb7a6a59a0cce03f86",
   measurementId: "G-C16RTE39L8"
 });
+firebase.auth().signInAnonymously()
+  .catch(error => {
+    console.error("Erreur auth anonyme", error);
+  });
+
 
 const db = firebase.firestore();
 
