@@ -62,25 +62,7 @@ searchInput.addEventListener("input", () => {
 
   displayRecettes(filtered);
 });
-// --------- MODE SOMBRE ---------
-const toggleDarkBtn = document.getElementById("toggle-dark");
+<script src="theme.js"></script>
 
-if(toggleDarkBtn){  // seulement si le bouton existe (index.html)
-  toggleDarkBtn.addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-
-    // Sauvegarder le choix de l'utilisateur
-    if(document.body.classList.contains("dark-mode")){
-      localStorage.setItem("darkMode", "enabled");
-    } else {
-      localStorage.setItem("darkMode", "disabled");
-    }
-  });
-}
-
-// Appliquer le mode sombre sur toutes les pages
-if(localStorage.getItem("darkMode") === "enabled"){
-  document.body.classList.add("dark-mode");
-}
 
 
