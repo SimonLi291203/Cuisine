@@ -23,6 +23,21 @@ auth.signInAnonymously()
   .catch(error => {
     console.error("Erreur connexion anonyme :", error);
   });
+if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
+  let email = window.localStorage.getItem("emailForSignIn");
+
+  if (!email) {
+    email = prompt("Veuillez confirmer votre email");
+  }
+
+  firebase.auth().signInWithEmailLink(email, window.location.href)
+    .then(result => {
+      window.localStorage.removeItem("emailForSignIn");
+      console.log("Connecté :", result.user.email);
+    })
+    .catch(err => console.error(err));
+}
+
 
 
 /* ======================= DOM ======================= */
