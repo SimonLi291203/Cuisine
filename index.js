@@ -62,3 +62,21 @@ searchInput.addEventListener("input", () => {
 
   displayRecettes(filtered);
 });
+const toggleDarkBtn = document.getElementById("toggle-dark");
+
+toggleDarkBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+
+  
+  if(document.body.classList.contains("dark-mode")){
+    localStorage.setItem("darkMode", "enabled");
+  } else {
+    localStorage.setItem("darkMode", "disabled");
+  }
+});
+
+// Restaurer le mode sombre au chargement de la page
+if(localStorage.getItem("darkMode") === "enabled"){
+  document.body.classList.add("dark-mode");
+}
+
