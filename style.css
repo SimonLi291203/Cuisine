@@ -134,17 +134,27 @@ textarea {
 }
 
 .bouton-remonter {
-  position: fixed;   
-  bottom: 20px;      
-  right: 20px;       
-  background: #4a94e4f8; 
-  color: white;      
-  padding: 10px 15px;
-  border-radius: 50%; 
-  text-decoration: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #007bff; /* Couleur de fond */
+  color: white !important;   /* Force le texte en blanc */
+  width: 40px;               /* Taille fixe pour être sûr */
+  height: 40px;              /* Taille fixe pour être sûr */
+  text-align: center;        /* Centre la flèche horizontalement */
+  line-height: 40px;         /* Centre la flèche verticalement */
+  border-radius: 50%;
+  text-decoration: none;     /* Enlève le soulignement moche */
+  z-index: 1000;             /* TRES IMPORTANT : met le bouton au-dessus de tout le reste */
+  cursor: pointer;
+  
+  /* L'état invisible par défaut */
   opacity: 0;
   visibility: hidden;
-  transition: all 0.1s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  
+  /* Désactive le surlignage bleu au tapotement sur mobile */
+  -webkit-tap-highlight-color: transparent; 
 }
 .bouton-remonter.visible {
   opacity: 1;
@@ -154,6 +164,18 @@ textarea {
 html {
   scroll-behavior: smooth;
 }
+
+
+.search-input {
+  display: block;
+  margin: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid #ccc;
+  font-size: 1.1rem;
+  width: calc(100% - 24px); /* full width minus margins */
+}
+
 /* ================= PAGE RECETTE ================= */
 
 #recette-details,
