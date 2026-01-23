@@ -62,7 +62,8 @@ function loadRecette() {
       data.preparation.map(p => `<li>${p}</li>`).join("");
 
     document.getElementById("notes-text").textContent = data.notes || "";
-    document.getElementById("date-text").textContent = data.date || "";
+    document.getElementById("date-text").textContent = data.date_modification || "";
+    document.getElementById("date-creation-text").textContent = data.date_creation || "";
 
     details.style.display = "block";
   });
@@ -95,7 +96,21 @@ function saveRecette() {
   const day = String(today.getDate()).padStart(2, '0');
   const month = String(today.getMonth() + 1).padStart(2, '0'); // mois de 0 à 11
   const year = today.getFullYear();
-  const dateEurope = `${day}-${month}-${year}`; // "05-01-2026"
+  const dateEurope_modification = `${day}-${month}-${year}`;
+  let dateEurope_creation = dateEurope_modification;
+
+  if (id) {
+    // Si on modifie, on garde la date de création existante
+    db.collection("recettes").doc(id).get().then(doc => {
+      if (doc.exists) {
+        const data = doc.data();
+        dateEurope_creation = data.date_creation || dateEurope_modification;
+        saveData(dateEurope_creation, dateEurope_modification);
+      }
+    });
+  } else {
+    saveData(dateEurope_creation, dateEurope_modification);
+  }
 
   const data = {
     personnes: parseInt(inputPersonnes.value) || 1,
@@ -103,7 +118,8 @@ function saveRecette() {
     ingredients: inputIngredients.value.split(",").map(s => s.trim()),
     preparation: inputPreparation.value.split("\n").map(s => s.trim()),
     notes: inputNotes.value,
-    date: dateEurope
+    date_creation: dateEurope_creation,
+    date_modification: dateEurope_modification
   };
 
   if (id) {

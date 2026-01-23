@@ -31,7 +31,7 @@ function displayRecettes(recettes) {
     recettesList.innerHTML += `
       <a href="recette.html?id=${data.id}" class="recette-card">
         <h2>${data.titre}</h2>
-        <p class="date">Dernière modification : ${data.date}</p>
+        <p class="date">Dernière modification : ${data.date_modification}</p>
         <span class="arrow">›</span>
       </a>
     `;
