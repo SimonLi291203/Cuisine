@@ -71,7 +71,7 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 50px 70px 50px 20px; /* top right bottom left */
+  padding: 50px 40px 50px 20px; /* top right bottom left */
 }
 
 .recette-card {
@@ -136,13 +136,13 @@ textarea {
 .bouton-remonter {
   position: fixed;
   bottom: 20px;
-  right: 20px;
+  right: 8px;
   background-color: #007bff; /* Couleur de fond */
   color: white !important;   /* Force le texte en blanc */
-  width: 40px;               /* Taille fixe pour être sûr */
-  height: 40px;              /* Taille fixe pour être sûr */
+  width: 30px;               /* Taille fixe pour être sûr */
+  height: 30px;              /* Taille fixe pour être sûr */
   text-align: center;        /* Centre la flèche horizontalement */
-  line-height: 40px;         /* Centre la flèche verticalement */
+  line-height: 30px;         /* Centre la flèche verticalement */
   border-radius: 50%;
   text-decoration: none;     /* Enlève le soulignement moche */
   z-index: 1000;             /* TRES IMPORTANT : met le bouton au-dessus de tout le reste */
