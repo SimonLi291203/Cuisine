@@ -98,40 +98,27 @@ function saveRecette() {
   const year = today.getFullYear();
   const dateEurope_modification = `${day}-${month}-${year}`;
 
-  if (id) {
-    // Si on modifie, on garde la date de création existante
-    db.collection("recettes").doc(id).get().then(doc => {
-      if (doc.exists) {
-        const existingData = doc.data();
-        const dateEurope_creation = existingData.date_creation || dateEurope_modification;
-        
-        const data = {
-          personnes: parseInt(inputPersonnes.value) || 1,
-          titre: inputTitre.value,
-          ingredients: inputIngredients.value.split(",").map(s => s.trim()),
-          preparation: inputPreparation.value.split("\n").map(s => s.trim()),
-          notes: inputNotes.value,
-          date_creation: dateEurope_creation,
-          date_modification: dateEurope_modification
-        };
+  const baseData = {
+    personnes: parseInt(inputPersonnes.value) || 1,
+    titre: inputTitre.value,
+    ingredients: inputIngredients.value.split(",").map(s => s.trim()),
+    preparation: inputPreparation.value.split("\n").map(s => s.trim()),
+    notes: inputNotes.value,
+    date_modification: dateEurope_modification
+  };
 
-        db.collection("recettes").doc(id).set(data)
-          .then(() => {
-            alert("Recette modifiée !");
-            location.reload();
-          });
-      }
-    });
+  if (id) {
+    // Si on modifie, on met à jour sans toucher à date_creation
+    db.collection("recettes").doc(id).update(baseData)
+      .then(() => {
+        alert("Recette modifiée !");
+        location.reload();
+      });
   } else {
     // Création d'une nouvelle recette
     const data = {
-      personnes: parseInt(inputPersonnes.value) || 1,
-      titre: inputTitre.value,
-      ingredients: inputIngredients.value.split(",").map(s => s.trim()),
-      preparation: inputPreparation.value.split("\n").map(s => s.trim()),
-      notes: inputNotes.value,
-      date_creation: dateEurope_modification,
-      date_modification: dateEurope_modification
+      ...baseData,
+      date_creation: dateEurope_modification
     };
 
     db.collection("recettes").add(data)
