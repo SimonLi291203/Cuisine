@@ -71,7 +71,7 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 10px;
+  padding: 50px 70px 50px 20px; /* top right bottom left */
 }
 
 .recette-card {
@@ -133,6 +133,27 @@ textarea {
   font-weight: bold;
 }
 
+.bouton-remonter {
+  position: fixed;   
+  bottom: 20px;      
+  right: 20px;       
+  background: #4a94e4f8; 
+  color: white;      
+  padding: 10px 15px;
+  border-radius: 50%; 
+  text-decoration: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.1s ease-in-out;
+}
+.bouton-remonter.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+html {
+  scroll-behavior: smooth;
+}
 /* ================= PAGE RECETTE ================= */
 
 #recette-details,

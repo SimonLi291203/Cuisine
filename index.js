@@ -62,7 +62,13 @@ searchInput.addEventListener("input", () => {
 
   displayRecettes(filtered);
 });
+/* ======================= BOUTON REMONTER ======================= */
+const boutonRemonter = document.querySelector('.bouton-remonter');
 
-
-
-
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 100) {
+    boutonRemonter.classList.add('visible');
+  } else {
+    boutonRemonter.classList.remove('visible');
+  }
+});
