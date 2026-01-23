@@ -97,38 +97,43 @@ function saveRecette() {
   const month = String(today.getMonth() + 1).padStart(2, '0'); // mois de 0 à 11
   const year = today.getFullYear();
   const dateEurope_modification = `${day}-${month}-${year}`;
-  let dateEurope_creation = dateEurope_modification;
 
   if (id) {
     // Si on modifie, on garde la date de création existante
     db.collection("recettes").doc(id).get().then(doc => {
       if (doc.exists) {
-        const data = doc.data();
-        dateEurope_creation = data.date_creation || dateEurope_modification;
-        saveData(dateEurope_creation, dateEurope_modification);
+        const existingData = doc.data();
+        const dateEurope_creation = existingData.date_creation || dateEurope_modification;
+        
+        const data = {
+          personnes: parseInt(inputPersonnes.value) || 1,
+          titre: inputTitre.value,
+          ingredients: inputIngredients.value.split(",").map(s => s.trim()),
+          preparation: inputPreparation.value.split("\n").map(s => s.trim()),
+          notes: inputNotes.value,
+          date_creation: dateEurope_creation,
+          date_modification: dateEurope_modification
+        };
+
+        db.collection("recettes").doc(id).set(data)
+          .then(() => {
+            alert("Recette modifiée !");
+            location.reload();
+          });
       }
     });
   } else {
-    saveData(dateEurope_creation, dateEurope_modification);
-  }
+    // Création d'une nouvelle recette
+    const data = {
+      personnes: parseInt(inputPersonnes.value) || 1,
+      titre: inputTitre.value,
+      ingredients: inputIngredients.value.split(",").map(s => s.trim()),
+      preparation: inputPreparation.value.split("\n").map(s => s.trim()),
+      notes: inputNotes.value,
+      date_creation: dateEurope_modification,
+      date_modification: dateEurope_modification
+    };
 
-  const data = {
-    personnes: parseInt(inputPersonnes.value) || 1,
-    titre: inputTitre.value,
-    ingredients: inputIngredients.value.split(",").map(s => s.trim()),
-    preparation: inputPreparation.value.split("\n").map(s => s.trim()),
-    notes: inputNotes.value,
-    date_creation: dateEurope_creation,
-    date_modification: dateEurope_modification
-  };
-
-  if (id) {
-    db.collection("recettes").doc(id).set(data)
-      .then(() => {
-        alert("Recette modifiée !");
-        location.reload();
-      });
-  } else {
     db.collection("recettes").add(data)
       .then(() => {
         alert("Recette ajoutée !");
